@@ -1,0 +1,67 @@
+{% extends "frappe/templates/web.html" %}
+{% block content %}
+{{ include_style('healthcare-web.bundle.css') }}
+<section class="portal-main-section">
+	<body>
+		<div class="col-12 portal-full-section">
+			<div class="c-section">
+				<ul class="breadcrumb">
+					<li><a href="/" class="normal-bc-link">{{ _('Home') }}</a> > </li>
+					<li class="selected-bc-link">&nbsp;{{ _('Departments') }}</a></li>
+				</ul>
+				<p class="text-muted">{{ _('Start by Choosing a Speciality') }}</p>
+				<div class="col-sm-12 depart-section">
+					<div class="fh-portal-btn">
+						<ul class="nav fh-btn-grp">
+							<li class="nav-item btn-grp">
+								<a class="nav-link department-btn fh-active-btn"
+								onclick="location.href='/departments'"
+									data-toggle="tab">
+									{{ _('Department') }}
+								</a>
+							</li>
+							<li class="nav-item btn-grp">
+								<a class="nav-link practitioner-btn fh-disabled-btn"
+								onclick="location.href='/practitioners'"
+									data-toggle="tab">
+									{{ _('Practitioner') }}
+								</a>
+							</li>
+						</ul>
+					</div>
+					<div class="department" id="department">
+						<div class="depart-div">
+							{% if medical_departments|length>0 %}
+							{% for dep in medical_departments %}
+								<div class="page-card cards" id="card" onclick="location.href='/practitioners?department={{ dep.department }}'">
+									<div class='fh-card-img-container'>
+										{% if dep.image %}
+											<img class="card-img-top fh-card-img" src="{{ dep.image }}" onerror="this.src='assets/frappe/images/default-avatar.png'">
+										{% else %}
+											<div class="portal-placeholder-div">
+												<span class="placeholder abbr-name">
+													{{ frappe.utils.get_abbr(dep.department) }}
+												</span>
+											</div>
+										{% endif %}
+									</div>
+									<div class = "text-container fh-card-text"><div class="text-secondary card-text"><b>{{ dep.department }}</b></div>
+										{% if dep.description %}
+											<div class="dep-description">{{ dep.description[:160] or "" }}</div>
+										{% endif %}
+									</div>
+								</div>
+							{% endfor %}
+							{% else %}
+							<div class="text-muted">
+								{{ _('No Department found!') }}
+							</div>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</section>
+{% endblock %}
