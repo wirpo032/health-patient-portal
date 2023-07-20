@@ -17,7 +17,7 @@ required_apps = ["erpnext"]
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/healthcare/css/healthcare.css"
-# app_include_js = "/assets/healthcare/js/healthcare.js"
+app_include_js = "healthcare.bundle.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/healthcare/css/healthcare.css"
@@ -60,10 +60,10 @@ doctype_js = {"Sales Invoice": "public/js/sales_invoice.js"}
 # ----------
 
 # add methods and filters to jinja environment
-jinja = {
-	"methods": "healthcare.healthcare.doctype.diagnostic_report.diagnostic_report.diagnostic_report_print",
-	# "filters": "healthcare.utils.jinja_filters"
-}
+# jinja = {
+# 	"methods": "healthcare.utils.jinja_methods",
+# 	"filters": "healthcare.utils.jinja_filters"
+# }
 
 # Installation
 # ------------
@@ -116,7 +116,6 @@ doc_events = {
 	"Sales Invoice": {
 		"on_submit": "healthcare.healthcare.utils.manage_invoice_submit_cancel",
 		"on_cancel": "healthcare.healthcare.utils.manage_invoice_submit_cancel",
-		"validate": "healthcare.healthcare.utils.manage_invoice_validate",
 	},
 	"Company": {
 		"after_insert": "healthcare.healthcare.utils.create_healthcare_service_unit_tree_root",

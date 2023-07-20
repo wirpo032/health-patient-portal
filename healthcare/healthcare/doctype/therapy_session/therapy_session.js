@@ -28,17 +28,6 @@ frappe.ui.form.on('Therapy Session', {
 				}
 			};
 		});
-
-		frm.set_query('service_request', function() {
-			return {
-				filters: {
-					'patient': frm.doc.patient,
-					'status': 'Active',
-					'docstatus': 1,
-					'template_dt': 'Therapy Type'
-				}
-			};
-		});
 	},
 
 	refresh: function(frm) {

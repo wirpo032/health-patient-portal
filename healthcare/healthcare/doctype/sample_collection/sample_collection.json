@@ -3,6 +3,7 @@
  "allow_copy": 1,
  "allow_import": 1,
  "autoname": "naming_series:",
+ "beta": 0,
  "creation": "2016-04-05 15:58:18.076977",
  "doctype": "DocType",
  "document_type": "Document",
@@ -14,12 +15,9 @@
   "patient_name",
   "patient_age",
   "patient_sex",
-  "referring_practitioner",
   "column_break_4",
-  "company",
-  "status",
   "inpatient_record",
-  "collection_point",
+  "company",
   "invoiced",
   "section_break_6",
   "sample",
@@ -29,15 +27,8 @@
   "collected_by",
   "collected_time",
   "num_print",
-  "section_break_xap8",
-  "observation_sample_collection",
-  "sample_html",
   "section_break_15",
   "sample_details",
-  "section_break_put4",
-  "service_request",
-  "reference_doc",
-  "reference_name",
   "amended_from"
  ],
  "fields": [
@@ -98,7 +89,6 @@
    "fieldtype": "Data",
    "hide_days": 1,
    "hide_seconds": 1,
-   "in_list_view": 1,
    "label": "Age",
    "read_only": 1
   },
@@ -108,7 +98,6 @@
    "fieldtype": "Link",
    "hide_days": 1,
    "hide_seconds": 1,
-   "in_list_view": 1,
    "label": "Gender",
    "options": "Gender",
    "read_only": 1
@@ -123,7 +112,6 @@
    "options": "Company"
   },
   {
-   "depends_on": "!doc.observation_sample_collection",
    "fieldname": "section_break_6",
    "fieldtype": "Section Break",
    "hide_days": 1,
@@ -140,13 +128,13 @@
    "in_standard_filter": 1,
    "label": "Sample",
    "options": "Lab Test Sample",
+   "reqd": 1,
    "search_index": 1
   },
   {
    "fetch_from": "sample.sample_uom",
    "fieldname": "sample_uom",
    "fieldtype": "Data",
-   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
    "in_list_view": 1,
@@ -208,7 +196,6 @@
    "default": "0",
    "fieldname": "sample_qty",
    "fieldtype": "Float",
-   "hidden": 1,
    "hide_days": 1,
    "hide_seconds": 1,
    "in_list_view": 1,
@@ -231,84 +218,16 @@
    "fetch_from": "patient.patient_name",
    "fieldname": "patient_name",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Patient Name",
    "read_only": 1
-  },
-  {
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "label": "Status",
-   "options": "Pending\nPartly Collected\nCollected"
-  },
-  {
-   "fieldname": "section_break_xap8",
-   "fieldtype": "Section Break",
-   "label": "Samples"
-  },
-  {
-   "fieldname": "observation_sample_collection",
-   "fieldtype": "Table",
-   "label": "Observation Sample Collection",
-   "options": "Observation Sample Collection"
-  },
-  {
-   "fieldname": "section_break_put4",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "service_request",
-   "fieldtype": "Link",
-   "label": "Service Request",
-   "options": "Service Request",
-   "read_only": 1
-  },
-  {
-   "fieldname": "collection_point",
-   "fieldtype": "Link",
-   "label": "Collection Point",
-   "options": "Healthcare Service Unit"
-  },
-  {
-   "fieldname": "reference_doc",
-   "fieldtype": "Link",
-   "label": "Reference Doc",
-   "options": "DocType",
-   "read_only": 1
-  },
-  {
-   "fieldname": "reference_name",
-   "fieldtype": "Dynamic Link",
-   "label": "Reference Name",
-   "options": "reference_doc",
-   "read_only": 1
-  },
-  {
-   "fieldname": "sample_html",
-   "fieldtype": "HTML",
-   "label": "Sample HTML"
-  },
-  {
-   "fieldname": "referring_practitioner",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Referring Practitioner",
-   "options": "Healthcare Practitioner",
-   "read_only_depends_on": "referring_practitioner"
   }
  ],
  "is_submittable": 1,
- "links": [
-  {
-   "link_doctype": "Diagnostic Report",
-   "link_fieldname": "sample_collection"
-  }
- ],
- "modified": "2023-07-07 14:02:01.417443",
+ "links": [],
+ "modified": "2020-07-30 16:53:13.076104",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Sample Collection",
- "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
@@ -331,7 +250,6 @@
  "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
  "title_field": "patient",
  "track_changes": 1,
  "track_seen": 1
