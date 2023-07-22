@@ -1,0 +1,81 @@
+{% extends "frappe/templates/web.html" %}
+{% block content %}
+{{ include_style('healthcare-web.bundle.css') }}
+<section class="portal-main-section">
+	<body>
+		<div class="col-sm-12 portal-full-section">
+			<div class="c-section">
+				<ul class="breadcrumb">
+					<li><a href="/" class="normal-bc-link">{{ _('Home') }}</a> > </li>
+					{% if department %}
+						<li><a href="/departments" class="normal-bc-link">&nbsp;{{ _('Departments') }}</a> > </li>
+					{% else %}
+						<li class="selected-bc-link">&nbsp;{{ _('Practitioners') }}</a></li>
+					{% endif %}
+					{% if department %}
+						<li class="selected-bc-link">&nbsp;{{department}}</a></li>
+					{% endif %}
+				</ul>
+			<p class="text-muted">{{ _('Whom do you want to consult') }}
+			{% if department %} {{ _('in') }} {{department}} {% endif %}?
+			</p>
+			<div class="col-sm-12 depart-section">
+				<div class="fh-portal-btn">
+					<ul class="nav fh-btn-grp">
+						<li class="nav-item btn-grp">
+							<a class="nav-link department-btn fh-disabled-btn"
+								onclick="location.href='/departments'"
+								data-toggle="tab">
+								{{ _('Department') }}
+							</a>
+						</li>
+						<li class="nav-item btn-grp">
+							<a class="nav-link practitioner-btn fh-active-btn"
+							onclick="location.href='/practitioners'"
+								data-toggle="tab">
+								{{ _('Practitioner') }}
+							</a>
+						</li>
+					</ul>
+				</div>
+				<div class="practitioner" id="practitioner">
+					<div class="pract-div">
+					{% if practitioner %}
+						{% set dep = "" %}
+						{% for pract in practitioner %}
+							{% if department %}
+								{% set dep = department %}
+							{% endif %}
+						<div class="page-card cards" id="card" onclick="location.href='/book_patient_appointment?practitioner={{ pract.name }}&department={{ dep }}'">
+							<div class='card-img-container'>
+								{% if pract.image %}
+									<img class="card-img-top fh-card-img" src="{{ pract.image }}" onerror="this.src='assets/frappe/images/default-avatar.png'; this.style.opacity=.3;">
+								{% else %}
+									<div class="portal-placeholder-div">
+										<span class="placeholder abbr-name">
+											{{ frappe.utils.get_abbr(pract.practitioner_name) }}
+										</span>
+									</div>
+								{% endif %}
+								</div>
+								<p class="text-secondary"><b>{{ pract.practitioner_name }}</b>
+								{% if not department %}
+									{% if pract.department %}
+									<span class="practitioner-text">{{ pract.department }}</span>
+									{% endif %}
+								{% endif %}
+								<span class="practitioner-text">{{ pract.designation or "" }}</span></p>
+						</div>
+						{% endfor %}
+					{% else %}
+						<div class="fh-no-cards">
+						<p>{{ _('No Practiioner active') }}{% if department %}  {{ _('for') }} {{department}} {% endif %}!</p>
+						</div>
+					{% endif %}
+				</div>
+			</div><br>
+			</div>
+		</div>
+	</body>
+</section>
+{% endblock %}

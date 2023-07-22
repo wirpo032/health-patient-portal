@@ -13,7 +13,7 @@ from frappe.contacts.address_and_contact import load_address_and_contact
 from frappe.contacts.doctype.contact.contact import get_default_contact
 from frappe.model.document import Document
 from frappe.model.naming import set_name_by_naming_series
-from frappe.utils import cint, cstr, getdate
+from frappe.utils import cint, cstr, getdate, has_common
 from frappe.utils.nestedset import get_root_of
 
 from healthcare.healthcare.doctype.healthcare_settings.healthcare_settings import (
@@ -253,6 +253,17 @@ class Patient(Document):
 		contact.flags.skip_patient_update = True
 		contact.save(ignore_permissions=True)
 
+	def calculate_age(self, ref_date=None):
+		if self.dob:
+			if not ref_date:
+				ref_date = frappe.utils.nowdate()
+			diff = frappe.utils.date_diff(ref_date, self.dob)
+			years = diff//365
+			months = (diff - (years * 365))//30
+			days = ((diff - (years * 365)) - (months * 30))
+			return {"age_in_string": f'{str(years)} {_("Year(s)")} {str(months)} {_("Month(s)")} {str(days)} {_("Day(s)")}',
+					"age_in_days": diff
+				}
 
 def create_customer(doc):
 	customer = frappe.get_doc(
@@ -343,3 +354,30 @@ def get_timeline_data(doctype, name):
 		patient_timeline_data.update(customer_timeline_data)
 
 	return patient_timeline_data
+
+
+def get_patients_from_user(user):
+	patients = []
+	if "Patient" in frappe.get_roles(user):
+
+		contact = frappe.qb.DocType("Contact")
+		dlink = frappe.qb.DocType("Dynamic Link")
+		patient = frappe.qb.DocType("Patient")
+
+		query = (
+			frappe.qb.from_(contact)
+			.from_(dlink)
+			.from_(patient)
+			.select(
+				contact.email_id,
+				dlink.link_doctype,
+				dlink.link_name,
+				patient.patient_name,
+			)
+			.where((contact.name == dlink.parent) & (contact.email_id == user) & (patient.name == dlink.link_name))
+		)
+
+		contacts = query.run(as_dict=True)
+
+		patients = [{"patient":c.link_name, "full_name": c.patient_name} for c in contacts if c.link_doctype == "Patient"]
+	return patients

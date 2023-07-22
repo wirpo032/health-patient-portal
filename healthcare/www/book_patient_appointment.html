@@ -1,0 +1,123 @@
+{% extends "frappe/templates/web.html" %}
+
+{% block content %}
+{{ include_style('healthcare-web.bundle.css') }}
+<section class="portal-main-section">
+	<body>
+		<div class="col-sm-12 c-section portal-full-section" id="book-appointment-sec">
+			<div class="col-sm-12">
+				<ul class="breadcrumb">
+					<li><a href="/" class="normal-bc-link">{{ _('Home') }}</a> > </li>
+					{% if department %}
+						<li><a href="/departments" class="normal-bc-link">&nbsp;{{ _('Departments') }}</a> > </li>
+						<li><a href="/practitioners?department={{ department }}" class="normal-bc-link"> &nbsp;{{department}}</a></li>
+							&nbsp;<li>></li>
+					{% else %}
+						<li><a href="/practitioners" class="normal-bc-link">&nbsp;{{ _('Practitioners') }}</a> > </li>
+					{% endif %}
+					<li class="selected-bc-link">&nbsp;{{ _('Book Appointment') }}</a></li>
+				  </ul>
+			</div>
+		<div class="text-center mt-5">
+				<p class="lead text-muted" id="head">{{ _('Choose date and timezone to book your slot') }}</p>
+					{% if pract_details['image'] %}
+						<img class="patient-app-img" src="{{ pract_details['image'] }}" onerror="this.style.display='none';">
+					{% endif %}
+					{% if pract_details['practitioner_name'] %}
+						<div class="" id="head"><b>{{pract_details['practitioner_name']}}</b>
+							<p class="appointment-dep" >{{pract_details['department']}}</p>
+						</div>
+					{% endif %}
+		</div>
+		<div class="row justify-content-center mt-3">
+			<div class="col-md-6 align-self-center ">
+				<div class="row">
+					<select name="appointment-timezone" oninput="on_date_or_timezone_select()" id="appointment-timezone"
+						class="form-control m-3 col-md">
+					</select>
+					<input type="date" oninput="on_date_or_timezone_select()" name="appointment-date" min={{min_day}}
+						max = {{max_day}} id="appointment-date" class="form-control mt-3 col-md m-3">
+				</div>
+			</div>
+		</div>
+		<div class="row justify-content-center mt-3 select-patient-sec">
+			<div class="col-md-3 align-self-center ">
+				<div class="appointment-dep text-muted" >{{ _('Booking For') }}</div>
+				<select name="patient-list" id="patient-list"
+					class="form-control col-md" oninput="on_date_or_timezone_select()">
+					{% if patients|length > 1 %}
+						<option value="" disabled selected>{{ _('Select Patient') }}</option>
+						{% for pat in patients %}
+							<option value="{{pat.patient}}">{{pat.full_name}}</option>
+						{% endfor %}
+					{% elif patients|length == 1 %}
+						<option value="{{patients[0].patient}}">{{patients[0].full_name}}</option>
+					{% else %}
+						<option value="" disabled selected>{{ _('No Patient registered for user') }}</option>
+					{% endif %}
+				</select>
+			</div>
+		</div>
+	<div class="col-sm-12 fh-slot-container" id="fh-slot-container"></div>
+	<div class="row justify-content-center mt-3">
+		<div class="col-sm-12 fh-slot-container-inner">
+			<div class="col-md-4 mb-3 opt-out-conf-div hide-sec" id = "opt-out-conf-div">
+					<label>
+						<span class="label-area text-muted opt-out-title">
+							{{ _("Selected slot has video conferencing by default.")}}
+						</span>
+						<input type="checkbox" class="opt-out-check"/>
+						<span class="label-area text-muted">
+						{{ _("Do not add Video Conferencing")}}
+						</span>
+						<span class="label-area text-muted opt-out-description">
+							{{ _("By enabling this user can opt out")}}
+						</span>
+					</label>
+				</div>
+		</div>
+		<div class="col-md-4 mb-3">
+			<button class="btn btn-primary form-control" id="book-button">{{ _('Book') }}</button>
+		</div>
+	</div>
+</div>
+
+<section class="page_content appointment-success-div"
+	id="appointment-success-sec">
+	<div class="success-page">
+		<div class="success-header">
+			<svg class="success-icon icon">
+				<use href="#icon-solid-success"></use>
+			</svg>
+			<h2 class="success-title">{{ _(healthcare_settings.success_title) or _("Appointment Booked") }}</h2>
+		</div>
+
+		<div class="success-body">
+			<p class="success-message">{{ _(healthcare_settings.success_message) or _("Your appointment has been booked successfully!") }}</p>
+			<p id="success-practitioner"></p>
+			{% if healthcare_settings.success_url %}
+				<div class="success_url_message">
+					<p>
+						<span>{{ _('Click on this ') }}</span>
+						<a href="{{ healthcare_settings.success_url }}">{{_("URL")}}</a>
+						<span> {{ _('if you are not redirected within ') }}</span>
+						<span class="time">5</span>
+						<span> {{ _('seconds.') }}</span>
+					</p>
+				</div>
+			{% endif %}
+			<a href="/" class="new-btn btn btn-default btn-md">{{ _("Home") }}</a>
+		</div>
+
+	</div>
+</section>
+	  </body>
+</section>
+<script>
+	var selected_practitioner = "{{ practitioner }}";
+	var max_days = "{{max_days}}"
+	var patient_list = "{{patients}}"
+	var success_url = "{{healthcare_settings.success_url}}"
+</script>
+
+{% endblock %}
