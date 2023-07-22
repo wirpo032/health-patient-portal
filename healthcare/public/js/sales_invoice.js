@@ -32,8 +32,26 @@ frappe.ui.form.on('Sales Invoice', {
 			frm.set_value("customer", "");
 			frm.set_df_property("customer", "read_only", 0);
 		}
+	},
+
+	service_unit: function (frm) {
+		set_service_unit(frm);
+	},
+
+	items_add: function (frm) {
+		set_service_unit(frm);
 	}
 });
+
+var set_service_unit = function (frm) {
+	if (frm.doc.service_unit && frm.doc.items.length > 0) {
+		frm.doc.items.forEach((item) => {
+			if (!item.service_unit) {
+				frappe.model.set_value(item.doctype, item.name, "service_unit", frm.doc.service_unit);
+			}
+		});
+	}
+};
 
 var get_healthcare_services_to_invoice = function(frm) {
 	var me = this;
@@ -118,7 +136,6 @@ var make_list_row= function(columns, invoice_healthcare_services, result={}) {
 		contents += `<div class="list-item__content ellipsis">
 			${
 				head ? `<span class="ellipsis">${__(frappe.model.unscrub(column))}</span>`
-
 				:(column !== "name" ? `<span class="ellipsis">${__(result[column])}</span>`
 					: `<a class="list-id ellipsis">
 						${__(result[column])}</a>`)
@@ -140,6 +157,7 @@ var make_list_row= function(columns, invoice_healthcare_services, result={}) {
 var set_primary_action= function(frm, dialog, $results, invoice_healthcare_services) {
 	var me = this;
 	dialog.set_primary_action(__('Add'), function() {
+		frm.clear_table('items');
 		let checked_values = get_checked_values($results);
 		if(checked_values.length > 0){
 			if(invoice_healthcare_services) {
@@ -199,7 +217,7 @@ var get_drugs_to_invoice = function(frm) {
 	var me = this;
 	let selected_encounter = '';
 	var dialog = new frappe.ui.Dialog({
-		title: __("Get Items from Prescriptions"),
+		title: __("Get Items from Medication Requests"),
 		fields:[
 			{ fieldtype: 'Link', options: 'Patient', label: 'Patient', fieldname: "patient", reqd: true },
 			{ fieldtype: 'Link', options: 'Patient Encounter', label: 'Patient Encounter', fieldname: "encounter", reqd: true,
@@ -273,6 +291,9 @@ var list_row_data_items = function(head, $row, result, invoice_healthcare_servic
 			: $row = $(`<div class="list-item-container"
 				data-item= "${result.drug_code}"
 				data-qty = ${result.quantity}
+				data-dn= "${result.reference_name}"
+				data-dt= "${result.reference_type}"
+				data-rate = ${result.rate}
 				data-description = "${result.description}">
 				</div>`).append($row);
 	}
@@ -298,6 +319,8 @@ var add_to_item_line = function(frm, checked_values, invoice_healthcare_services
 			var si_item = frappe.model.add_child(frm.doc, 'Sales Invoice Item', 'items');
 			frappe.model.set_value(si_item.doctype, si_item.name, 'item_code', checked_values[i]['item']);
 			frappe.model.set_value(si_item.doctype, si_item.name, 'qty', 1);
+			frappe.model.set_value(si_item.doctype, si_item.name, 'reference_dn', checked_values[i]['dn']);
+			frappe.model.set_value(si_item.doctype, si_item.name, 'reference_dt', checked_values[i]['dt']);
 			if(checked_values[i]['qty'] > 1){
 				frappe.model.set_value(si_item.doctype, si_item.name, 'qty', parseFloat(checked_values[i]['qty']));
 			}

@@ -38,7 +38,8 @@ frappe.ui.form.on('Patient Appointment', {
 				query: 'healthcare.controllers.queries.get_healthcare_service_units',
 				filters: {
 					company: frm.doc.company,
-					inpatient_record: frm.doc.inpatient_record
+					inpatient_record: frm.doc.inpatient_record,
+					allow_appointments: 1,
 				}
 			};
 		});
@@ -51,46 +52,24 @@ frappe.ui.form.on('Patient Appointment', {
 			};
 		});
 
+		frm.set_query('service_request', function() {
+			return {
+				filters: {
+					'patient': frm.doc.patient,
+					'status': 'Active',
+					'docstatus': 1,
+					'template_dt': ['in', ['Clinical Procedure', 'Therapy Type']]
+				}
+			};
+		});
+
 		frm.trigger('set_therapy_type_filter');
 
 		if (frm.is_new()) {
-			frm.page.set_primary_action(__('Check Availability'), function() {
-				if (!frm.doc.patient) {
-					frappe.msgprint({
-						title: __('Not Allowed'),
-						message: __('Please select Patient first'),
-						indicator: 'red'
-					});
-				} else {
-					frappe.call({
-						method: 'healthcare.healthcare.doctype.patient_appointment.patient_appointment.check_payment_fields_reqd',
-						args: { 'patient': frm.doc.patient },
-						callback: function(data) {
-							if (data.message == true) {
-								if (frm.doc.mode_of_payment && frm.doc.paid_amount) {
-									check_and_set_availability(frm);
-								}
-								if (!frm.doc.mode_of_payment) {
-									frappe.msgprint({
-										title: __('Not Allowed'),
-										message: __('Please select a Mode of Payment first'),
-										indicator: 'red'
-									});
-								}
-								if (!frm.doc.paid_amount) {
-									frappe.msgprint({
-										title: __('Not Allowed'),
-										message: __('Please set the Paid Amount first'),
-										indicator: 'red'
-									});
-								}
-							} else {
-								check_and_set_availability(frm);
-							}
-						}
-					});
-				}
-			});
+			frm.page.clear_primary_action();
+			if (frm.doc.appointment_for) {
+				frm.trigger('appointment_for');
+			}
 		} else {
 			frm.page.set_primary_action(__('Save'), () => frm.save());
 		}
@@ -139,9 +118,92 @@ frappe.ui.form.on('Patient Appointment', {
 		}
 	},
 
+	appointment_for: function(frm) {
+		if (frm.doc.appointment_for == 'Practitioner') {
+			if (!frm.doc.practitioner) {
+				frm.set_value('department', '');
+			}
+			frm.set_value('service_unit', '');
+			frm.trigger('set_check_availability_action');
+		} else if (frm.doc.appointment_for == 'Service Unit') {
+			frm.set_value({
+				'practitioner': '',
+				'practitioner_name': '',
+				'department': '',
+			});
+			frm.trigger('set_book_action');
+		} else if (frm.doc.appointment_for == 'Department') {
+			frm.set_value({
+				'practitioner': '',
+				'practitioner_name': '',
+				'service_unit': '',
+			});
+			frm.trigger('set_book_action');
+		} else {
+			if (frm.doc.appointment_for == 'Department') {
+				frm.set_value('service_unit', '');
+			}
+			frm.set_value({
+				'practitioner': '',
+				'practitioner_name': '',
+				'department': '',
+				'service_unit': '',
+			});
+			frm.page.clear_primary_action();
+		}
+	},
+
+	set_book_action: function(frm) {
+		frm.page.set_primary_action(__('Book'), function() {
+			frm.enable_save();
+			frm.save();
+		});
+	},
+
+	set_check_availability_action: function(frm) {
+		frm.page.set_primary_action(__('Check Availability'), function() {
+			if (!frm.doc.patient) {
+				frappe.msgprint({
+					title: __('Not Allowed'),
+					message: __('Please select Patient first'),
+					indicator: 'red'
+				});
+			} else {
+				frappe.call({
+					method: 'healthcare.healthcare.doctype.patient_appointment.patient_appointment.check_payment_fields_reqd',
+					args: { 'patient': frm.doc.patient },
+					callback: function(data) {
+						if (data.message == true) {
+							if (frm.doc.mode_of_payment && frm.doc.paid_amount) {
+								check_and_set_availability(frm);
+							}
+							if (!frm.doc.mode_of_payment) {
+								frappe.msgprint({
+									title: __('Not Allowed'),
+									message: __('Please select a Mode of Payment first'),
+									indicator: 'red'
+								});
+							}
+							if (!frm.doc.paid_amount) {
+								frappe.msgprint({
+									title: __('Not Allowed'),
+									message: __('Please set the Paid Amount first'),
+									indicator: 'red'
+								});
+							}
+						} else {
+							check_and_set_availability(frm);
+						}
+					}
+				});
+			}
+		});
+	},
+
 	patient: function(frm) {
 		if (frm.doc.patient) {
 			frm.trigger('toggle_payment_fields');
+			frm.trigger('appointment_for');
 			frappe.call({
 				method: 'frappe.client.get',
 				args: {
@@ -172,6 +234,20 @@ frappe.ui.form.on('Patient Appointment', {
 
 	appointment_type: function(frm) {
 		if (frm.doc.appointment_type) {
+			if (frm.doc.appointment_for && frm.doc[frappe.scrub(frm.doc.appointment_for)]) {
+				frm.events.set_payment_details(frm);
+			}
+		}
+	},
+
+	department: function(frm) {
+		if (frm.doc.department && frm.doc.appointment_for == 'Department') {
+			frm.events.set_payment_details(frm);
+		}
+	},
+
+	service_unit: function(frm) {
+		if (frm.doc.service_unit && frm.doc.appointment_for == 'Service Unit') {
 			frm.events.set_payment_details(frm);
 		}
 	},
@@ -180,7 +256,7 @@ frappe.ui.form.on('Patient Appointment', {
 		frappe.db.get_single_value('Healthcare Settings', 'automate_appointment_invoicing').then(val => {
 			if (val) {
 				frappe.call({
-					method: 'healthcare.healthcare.utils.get_service_item_and_practitioner_charge',
+					method: 'healthcare.healthcare.utils.get_appointment_billing_item_and_rate',
 					args: {
 						doc: frm.doc
 					},
@@ -323,7 +399,6 @@ let check_and_set_availability = function(frm) {
 					&& !overlap_appointments
 
 				frm.set_value('add_video_conferencing', add_video_conferencing);
-
 				if (!frm.doc.duration) {
 					frm.set_value('duration', duration);
 				}
@@ -417,7 +492,7 @@ let check_and_set_availability = function(frm) {
 						section_field.df.hidden = 0;
 
 						let payment_details = (await frappe.call(
-							'healthcare.healthcare.utils.get_service_item_and_practitioner_charge',
+							'healthcare.healthcare.utils.get_appointment_billing_item_and_rate',
 							{
 								doc: frm.doc
 							}
@@ -537,7 +612,7 @@ let check_and_set_availability = function(frm) {
 			slot_html += `
 				<span><b>
 				${__('Practitioner Schedule: ')} </b> ${slot_info.slot_name}
-					${slot_info.tele_conf && !slot_info.allow_overlap ? '<i class="fa fa-video-camera fa-1x" aria-hidden="true"></i>' : ''}
+					${slot_info.tele_conf && !slot_info.allow_overlap ? '<i class="fa fa-video-camera fa-1x"></i>' : ''}
 				</span><br>
 				<span><b> ${__('Service Unit: ')} </b> ${slot_info.service_unit}</span>`;
 
