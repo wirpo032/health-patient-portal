@@ -82,7 +82,7 @@ class PatientAppointment(Document):
 			self.status = "Scheduled"
 
 	def validate_overlaps(self):
-		if not self.practitioner:
+		if self.based_on_checkin or not self.practitioner:
 			return
 
 		end_time = datetime.datetime.combine(
@@ -499,7 +499,7 @@ def check_sales_invoice_exists(appointment):
 
 
 @frappe.whitelist()
-def get_availability_data(date, practitioner, appointment=None, to_tz=None):
+def get_availability_data(date, practitioner, appointment, to_tz=None):
 	"""
 	Get availability data of 'practitioner' on 'date'
 	:param date: Date to check in schedule
@@ -530,20 +530,18 @@ def get_availability_data(date, practitioner, appointment=None, to_tz=None):
 			_("Healthcare Practitioner not available on {0}").format(weekday), title=_("Not Available")
 		)
 
+	if isinstance(appointment, str):
+		appointment = json.loads(appointment)
+		appointment = frappe.get_doc(appointment)
+
 	fee_validity = "Disabled"
+	if frappe.db.get_single_value("Healthcare Settings", "enable_free_follow_ups"):
+		fee_validity = check_fee_validity(appointment, date, practitioner)
+		if not fee_validity and not appointment.get("__islocal"):
+			fee_validity = get_fee_validity(appointment.get("name"), date) or None
 
-	if appointment:
-		if isinstance(appointment, str):
-			appointment = json.loads(appointment)
-			appointment = frappe.get_doc(appointment)
-
-		if frappe.db.get_single_value("Healthcare Settings", "enable_free_follow_ups"):
-			fee_validity = check_fee_validity(appointment, date, practitioner)
-			if not fee_validity and not appointment.get("__islocal"):
-				fee_validity = get_fee_validity(appointment.get("name"), date) or None
-
-		if appointment.invoiced:
-			fee_validity = "Disabled"
+	if appointment.invoiced:
+		fee_validity = "Disabled"
 
 	return {"slot_details": slot_details, "fee_validity": fee_validity}
 
