@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE File SYSTEM "laboratory.dtd">
+<?xml-stylesheet type="text/xsl" href="laboratory-french.xsl"?>
+<File>
+    <Record> 
+<Header><LaboFileFormatVersion>1.0</LaboFileFormatVersion>
+<CodeLabUCM>601008-93F</CodeLabUCM>
+<CodeLabInternal>KET</CodeLabInternal>
+<CodePhysicianUCM>903853-07</CodePhysicianUCM>
+<SSNPatient>1954071829953</SSNPatient>
+</Header>
+        <Body>
+            <Sender>
+                <Organisation>
+                    <OrganisationName>Laboratoire KetterThill</OrganisationName>
+                    <ContactPerson>
+                        <LastName>GIDENNE</LastName>
+                        <FirstName>Stéphane</FirstName>
+                    </ContactPerson>
+                    <Address>
+                        <Street>8, Avenue du Swing</Street>
+                        <ZipCode>4401</ZipCode>
+                        <Town>BELVAUX</Town>
+                        <CountryCode>LU</CountryCode>
+                    </Address>
+                    <phone>+352 488 288 1</phone>
+                    <GSM> </GSM>
+                    <FAX>+352 488 288 306</FAX>
+                    <EMail>info@ketterthill.lu</EMail>
+                </Organisation>
+            </Sender>
+            <Destination>
+                <Organisation>
+                    <OrganisationName>SCHROEDER Julie</OrganisationName>
+                    <ContactPerson>
+                        <LastName>SCHROEDER</LastName>
+                        <FirstName>Julie</FirstName>
+                    </ContactPerson>
+                    <Address>
+                        <Street>148, bd de la Petrusse</Street>
+                        <ZipCode>2330</ZipCode>
+                        <Town>LUXEMBOURG</Town>
+                        <CountryCode>LU</CountryCode>
+                    </Address>
+                </Organisation>
+            </Destination>
+            <Patient>
+                <Person>
+                    <LastName>UICICH</LastName>
+                    <FirstName>Leopoldo</FirstName>
+                    <Address>
+                        <Street>8, boulevard Kaltreis</Street>
+                        <ZipCode>1881</ZipCode>
+                        <Town>LUXEMBOURG</Town>
+                        <CountryCode>LU</CountryCode>
+                    </Address>
+                </Person>
+            </Patient>
+            <ExaminationDate>
+                <Date year="2023" month="04" day="26" hour="10" minute="16"/>
+            </ExaminationDate>
+            <SpecimenDate>
+                <Date year="2023" month="04" day="26" hour="10" minute="15"/>
+            </SpecimenDate>
+            <PrescriptionDate>
+                <Date year="2023" month="04" day="21" hour="00" minute="00"/>
+            </PrescriptionDate>
+            <ReferenceNumber>231731379</ReferenceNumber>
+            <ExaminationStatus>Complet</ExaminationStatus>
+            
+        </Body>
+		<Result>
+			<Title>MYCOLOGIE</Title>
+		</Result>
+		<Result>
+			<Title>Origine du prélèvement : Ongle  Pied gauche</Title>
+		</Result>
+		<Result>
+			<Title>Renseignements cliniques</Title>
+		</Result>
+		<Result>
+			<DescriptionInternal>Rens. cliniques mycologie</DescriptionInternal>
+			<ResultComments>Epaississement de l'ongle
+Date de découverte : +/- 6 mois
+Voyage : non
+Animal de compagnie : chat
+Environnement professionnel : retraité
+Traitement : en cours</ResultComments>
+		</Result>
+		<Result>
+			<Title>Examen direct</Title>
+		</Result>
+		<Result>
+			<DescriptionInternal>Examen direct mycologie</DescriptionInternal>
+			<ResultValue>Présence de filaments mycéliens</ResultValue>
+		</Result>
+		<Result>
+			<Title>Culture</Title>
+		</Result>
+		<Result>
+			<DescriptionInternal>Culture mycologie</DescriptionInternal>
+			<ResultValue>Présence de Trichophyton rubrum.</ResultValue>
+		</Result>
+		<Result>
+			<Title>Commentaire</Title>
+		</Result>
+		<Result>
+			<DescriptionInternal>Commentaire mycologie</DescriptionInternal>
+			<ResultComments>T.rubrum : dermatophyte responsable d'intertrigos et/ou d'onyxis des pieds, d'hyperkératoses palmo-plantaires
+et d'intertrigos inguinaux (lésions peu inflammatoires).
+D'autres endroits du corps peuvent être atteints par autocontamination : lésions dermatophytiques parfois
+atypiques et simulant diverses affections dermatologiques (acné rosacée, furonculose, sarcoïdose...).</ResultComments>
+		</Result>
+</Record>
+</File>

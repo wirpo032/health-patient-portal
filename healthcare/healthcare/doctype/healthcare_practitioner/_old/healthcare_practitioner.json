@@ -102,7 +102,6 @@
       "fieldname": "designation",
       "fieldtype": "Link",
       "ignore_user_permissions": 1,
-      "in_list_view": 1,
       "in_standard_filter": 1,
       "label": "Designation",
       "options": "Designation",
@@ -112,6 +111,7 @@
       "fieldname": "department",
       "fieldtype": "Link",
       "ignore_user_permissions": 1,
+      "in_list_view": 1,
       "in_standard_filter": 1,
       "label": "Medical Department",
       "options": "Medical Department"
@@ -128,7 +128,6 @@
      {
       "fieldname": "mobile_phone",
       "fieldtype": "Data",
-      "in_list_view": 1,
       "label": "Mobile"
      },
      {
@@ -139,7 +138,6 @@
      {
       "fieldname": "office_phone",
       "fieldtype": "Data",
-      "in_list_view": 1,
       "label": "Phone (Office)"
      },
      {
@@ -354,59 +352,28 @@
       "fieldtype": "Link",
       "label": "Supplier",
       "options": "Supplier"
+     },
+     {
+      "default": "0",
+      "fieldname": "show_in_website",
+      "fieldtype": "Check",
+      "label": "Show In Website"
      }
     ],
     "image_field": "image",
     "links": [],
-    "modified": "2023-03-15 12:20:36.616754",
+    "modified": "2023-07-23 16:21:07.869172",
     "modified_by": "Administrator",
     "module": "Healthcare",
     "name": "Healthcare Practitioner",
     "naming_rule": "By \"Naming Series\" field",
     "owner": "Administrator",
-    "permissions": [
-     {
-      "create": 1,
-      "email": 1,
-      "print": 1,
-      "read": 1,
-      "report": 1,
-      "role": "Laboratory User",
-      "select": 1,
-      "share": 1,
-      "write": 1
-     },
-     {
-      "create": 1,
-      "delete": 1,
-      "email": 1,
-      "export": 1,
-      "print": 1,
-      "read": 1,
-      "report": 1,
-      "role": "Physician",
-      "select": 1,
-      "share": 1,
-      "write": 1
-     },
-     {
-      "create": 1,
-      "delete": 1,
-      "email": 1,
-      "export": 1,
-      "print": 1,
-      "read": 1,
-      "report": 1,
-      "role": "Nursing User",
-      "select": 1,
-      "share": 1,
-      "write": 1
-     }
-    ],
+    "permissions": [],
     "quick_entry": 1,
     "restrict_to_domain": "Healthcare",
     "search_fields": "practitioner_name, mobile_phone, office_phone",
     "show_name_in_global_search": 1,
+    "show_title_field_in_link": 1,
     "sort_field": "modified",
     "sort_order": "DESC",
     "states": [],
