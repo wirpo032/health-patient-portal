@@ -1,5 +1,7 @@
 {
  "actions": [],
+ "allow_events_in_timeline": 1,
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "naming_series:",
  "creation": "2023-06-09 11:01:49.970959",
@@ -9,6 +11,7 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
+  "observation",
   "observation_template",
   "observation_category",
   "column_break_7xu5",
@@ -19,31 +22,29 @@
   "section_break_i70a",
   "patient",
   "patient_name",
-  "gender",
   "column_break_qxq5",
   "age",
-  "days",
+  "gender",
   "section_break_zz5k",
   "healthcare_practitioner",
   "practitioner_name",
   "template_details_section",
-  "preferred_display_name",
   "has_component",
+  "preferred_display_name",
   "sample_collection_required",
   "permitted_unit",
   "column_break_pxgu",
   "sample",
   "sample_type",
+  "permitted_data_type",
   "method",
-  "result_template",
-  "interpretation_template",
   "column_break_meur",
   "specimen",
   "sample_collection_time",
   "column_break_yo05",
   "sample_status",
   "result_section",
-  "permitted_data_type",
+  "result_template",
   "result_attach",
   "result_boolean",
   "result_data",
@@ -58,6 +59,7 @@
   "time_of_result",
   "time_of_approval",
   "column_break_zrac",
+  "interpretation_template",
   "result_interpretation",
   "observation_method",
   "reference_section",
@@ -77,16 +79,25 @@
   "service_request",
   "column_break_wwnp",
   "parent_observation",
-  "observation_idx"
+  "observation_idx",
+  "days"
  ],
  "fields": [
+  {
+   "fieldname": "observation",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Observation",
+   "reqd": 1
+  },
   {
    "fieldname": "observation_template",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "in_standard_filter": 1,
    "label": "Observation Template",
-   "options": "Observation Template"
+   "options": "Observation Template",
+   "reqd": 1,
+   "set_only_once": 1
   },
   {
    "fieldname": "column_break_7xu5",
@@ -174,7 +185,7 @@
    "label": "Result"
   },
   {
-   "depends_on": "eval:doc.permitted_data_type == \"Text\" || doc.observation_category == \"Imaging\";",
+   "depends_on": "eval:doc.permitted_data_type == \"Text\";",
    "fieldname": "result_text",
    "fieldtype": "Text Editor",
    "label": "Result"
@@ -225,15 +236,6 @@
    "label": "Parent Observation",
    "options": "Observation",
    "read_only": 1
-  },
-  {
-   "default": "0",
-   "fetch_from": "observation_template.has_component",
-   "fieldname": "has_component",
-   "fieldtype": "Check",
-   "label": "Has Component",
-   "read_only": 1,
-   "read_only_depends_on": "observation_template"
   },
   {
    "depends_on": "eval:doc.permitted_data_type == \"Attach\";",
@@ -299,6 +301,7 @@
    "fieldtype": "Select",
    "label": "Observation Category",
    "options": "\nSocial History\nVital Signs\nImaging\nLaboratory\nProcedure\nSurvey\nExam\nTherapy\nActivity",
+   "read_only": 1,
    "read_only_depends_on": "observation_template",
    "reqd": 1
   },
@@ -528,31 +531,26 @@
    "label": "Interpretation Template",
    "options": "Terms and Conditions",
    "read_only": 1
+  },
+  {
+   "default": "0",
+   "fetch_from": "observation_template.has_component",
+   "fieldname": "has_component",
+   "fieldtype": "Check",
+   "label": "Has Component",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2023-07-21 16:44:53.909802",
+ "modified": "2023-07-24 19:25:20.826456",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Observation",
  "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
- "permissions": [
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
-  }
- ],
+ "permissions": [],
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
