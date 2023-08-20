@@ -1,0 +1,35 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2023-08-15 19:57:42.716209",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "code"
+ ],
+ "fields": [
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_preview": 1,
+   "in_standard_filter": 1,
+   "label": "Conditional Coverage Codes",
+   "options": "Conditional Coverage Codes"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2023-08-15 20:55:12.080116",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Conditional Coverage Code Detail",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

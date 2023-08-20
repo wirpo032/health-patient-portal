@@ -42,6 +42,21 @@
 		</div>
 		<div class="row justify-content-center mt-3 select-patient-sec">
 			<div class="col-md-3 align-self-center ">
+				<div class="appointment-dep text-muted" >{{ _('Appointment Type') }}</div>
+				<select name="appointment-type" id="appointment-type"
+					class="form-control col-md" oninput="on_date_or_timezone_select()">
+					{% if appointment_types|length > 1 %}
+						<option value="" disabled selected>{{ _('Select Appointment Type') }}</option>
+						{% for apt in appointment_types %}
+							<option value="{{apt}}">{{apt}}</option>
+						{% endfor %}
+					{% elif patients|length == 1 %}
+						<option value="{{patients[0].patient}}">{{appointment_types[0]}}</option>
+					{% else %}
+						<option value="" disabled selected>{{ _('Appointment Type not present') }}</option>
+					{% endif %}
+				</select>
+
 				<div class="appointment-dep text-muted" >{{ _('Booking For') }}</div>
 				<select name="patient-list" id="patient-list"
 					class="form-control col-md" oninput="on_date_or_timezone_select()">

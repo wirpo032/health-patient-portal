@@ -18,6 +18,7 @@ function on_date_or_timezone_select() {
 	let date_picker = document.getElementById('appointment-date');
 	let timezone = document.getElementById('appointment-timezone');
 	let patient_id = document.getElementById('patient-list');
+	let appointment_type = document.getElementById('appointment-type');
 	if (date_picker.value === '') {
 		clear_slots();
 		hide_book_btn();
@@ -32,6 +33,15 @@ function on_date_or_timezone_select() {
 		hide_book_btn();
 		frappe.show_alert({
 			message: __("Please select a patient"),
+			indicator: "info"
+		  });
+		  return
+	}
+	if (date_picker.value && patient_id.value && appointment_type.value ==='') {
+		clear_slots();
+		hide_book_btn();
+		frappe.show_alert({
+			message: __("Please select an Appointment Type"),
 			indicator: "info"
 		  });
 		  return
@@ -227,20 +237,25 @@ function book_appointment(){
 		indicator: "info"
 	  });
 	let patient_id = document.getElementById('patient-list');
+	let appointment_type = document.getElementById('appointment-type');
 	let opt_out_vconf = 1
 	if (parseInt(window.tele_conf)==1 && !$(".opt-out-check").is(":checked")) {
 		opt_out_vconf = 0
 	}
+	let args = {
+		practitioner: selected_practitioner,
+		patient: patient_id.value,
+		date: window.selected_date,
+		time: window.selected_slot,
+		duration: window.duration,
+		service_unit : window.service_unit,
+		opt_out_vconf: opt_out_vconf,
+		appointment_type: appointment_type.value
+	}
 	frappe.call({
 		method: 'healthcare.www.book_patient_appointment.book_appointment',
 		args: {
-			practitioner: selected_practitioner,
-			patient: patient_id.value,
-			date: window.selected_date,
-			time: window.selected_slot,
-			duration: window.duration,
-			service_unit : window.service_unit,
-			opt_out_vconf: opt_out_vconf,
+			args
 		},
 		callback: (r) => {
 			if(!r.exc && r.message) {

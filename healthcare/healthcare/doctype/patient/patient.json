@@ -487,12 +487,18 @@
  ],
  "icon": "fa fa-user",
  "image_field": "image",
- "links": [],
+ "links": [
+  {
+   "link_doctype": "AvisConfrere",
+   "link_fieldname": "patient_name"
+  }
+ ],
  "max_attachments": 50,
- "modified": "2023-01-13 17:48:59.069268",
+ "modified": "2023-08-01 13:12:20.175504",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Patient",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {

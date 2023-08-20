@@ -1,4 +1,5 @@
 import frappe
+import json
 from frappe import _
 from frappe.utils import today, add_days
 from healthcare.healthcare.doctype.patient.patient import get_patients_from_user
@@ -36,19 +37,24 @@ def get_context(context):
 	context.healthcare_settings = healthcare_settings
 	context.max_day = add_days(today(), int(hcare_max_days))
 
+	context.appointment_types = frappe.db.get_all("Appointment Type", {"allow_booking_for": "Practitioner"}, ["name"], pluck="name")
+
 
 @frappe.whitelist()
-def book_appointment(practitioner, patient, date, time, duration, service_unit, opt_out_vconf):
-	if patient:
+def book_appointment(args):
+	args = json.loads(args)
+	if args.get("patient"):
 		appointment = frappe.get_doc({
 			'doctype': 'Patient Appointment',
-			'patient': patient,
-			'practitioner': practitioner,
-			'appointment_date': date,
-			'appointment_time': time,
-			'duration': duration,
-			'service_unit': service_unit,
-			'add_video_conferencing': 0 if int(opt_out_vconf)==1 else 1,
+			'patient': args.get("patient"),
+			'practitioner': args.get("practitioner"),
+			'appointment_date': args.get("date"),
+			'appointment_time': args.get("time"),
+			'duration': args.get("duration"),
+			'service_unit': args.get("service_unit"),
+			'appointment_type': args.get("appointment_type"),
+			'appointment_for': "Practitioner",
+			'add_video_conferencing': 0 if int(args.get("opt_out_vconf"))==1 else 1,
 		})
 		appointment.flags.silent = True
 		appointment.insert(ignore_permissions=True)
